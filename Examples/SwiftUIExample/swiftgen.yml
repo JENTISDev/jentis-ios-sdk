@@ -1,0 +1,5 @@
+xcassets:
+ inputs: Jentis/Assets.xcassets
+ outputs:
+  templateName: swift4
+  output: Jentis/Assets.swift

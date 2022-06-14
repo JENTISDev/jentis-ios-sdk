@@ -1,1 +1,3 @@
-# jentis-ios
+# JentisPackage
+
+A description of this package.
