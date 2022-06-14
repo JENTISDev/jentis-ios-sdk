@@ -7,16 +7,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "3C22C2B0-553C-4FFC-8049-CB9139BB44AE"
+            uuid = "1BA620A7-13C6-413B-BF34-23EF45252856"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../Sources/Jentis/TrackService.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "111"
-            endingLineNumber = "111"
-            landmarkName = "trackDefault(currentView:)"
+            startingLineNumber = "143"
+            endingLineNumber = "143"
+            landmarkName = "getTrackingData(currentView:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

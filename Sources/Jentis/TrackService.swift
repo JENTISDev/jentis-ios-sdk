@@ -204,6 +204,7 @@ public class TrackService {
 
         let eventDataSystem = System()
         eventDataSystem.consent = consent
+        eventDataSystem.href = ""
         eventData.system = eventDataSystem
 
         let eventDataProperty = Property()

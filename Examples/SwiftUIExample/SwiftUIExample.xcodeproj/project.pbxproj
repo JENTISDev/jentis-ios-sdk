@@ -14,7 +14,7 @@
 		2704A1642858B9C500A50066 /* FirstScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2704A1602858B9C500A50066 /* FirstScreen.swift */; };
 		2704A1652858B9C500A50066 /* ThirdScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2704A1612858B9C500A50066 /* ThirdScreen.swift */; };
 		2704A1662858B9C500A50066 /* jentisConsent.json in Resources */ = {isa = PBXBuildFile; fileRef = 2704A1622858B9C500A50066 /* jentisConsent.json */; };
-		2704A16D2858BB4400A50066 /* Jentis in Frameworks */ = {isa = PBXBuildFile; productRef = 2704A16C2858BB4400A50066 /* Jentis */; };
+		273376412858EEA10084D5F8 /* Jentis in Frameworks */ = {isa = PBXBuildFile; productRef = 273376402858EEA10084D5F8 /* Jentis */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,7 +26,7 @@
 		2704A1602858B9C500A50066 /* FirstScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirstScreen.swift; sourceTree = "<group>"; };
 		2704A1612858B9C500A50066 /* ThirdScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThirdScreen.swift; sourceTree = "<group>"; };
 		2704A1622858B9C500A50066 /* jentisConsent.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = jentisConsent.json; sourceTree = "<group>"; };
-		2704A16F2858BC3E00A50066 /* Jentis */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Jentis; path = ../..; sourceTree = "<group>"; };
+		2733763F2858EE460084D5F8 /* jentis-ios */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "jentis-ios"; path = ../..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -34,7 +34,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2704A16D2858BB4400A50066 /* Jentis in Frameworks */,
+				273376412858EEA10084D5F8 /* Jentis in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -84,7 +84,7 @@
 		2704A1672858BA9300A50066 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				2704A16F2858BC3E00A50066 /* Jentis */,
+				2733763F2858EE460084D5F8 /* jentis-ios */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -113,7 +113,7 @@
 			);
 			name = SwiftUIExample;
 			packageProductDependencies = (
-				2704A16C2858BB4400A50066 /* Jentis */,
+				273376402858EEA10084D5F8 /* Jentis */,
 			);
 			productName = SwiftUIExample;
 			productReference = 2704A14E2858B94D00A50066 /* SwiftUIExample.app */;
@@ -374,7 +374,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		2704A16C2858BB4400A50066 /* Jentis */ = {
+		273376402858EEA10084D5F8 /* Jentis */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Jentis;
 		};
