@@ -93,20 +93,21 @@ public class TrackService {
     }
 
     private func sendConsentSettings(consentId: String, vendors: [String: Bool], vendorsChanged: [String: Bool]) {
-        var consentSettings: [TrackingDataDatum] = []
+        let trackingData = TrackingData()
 
         let parent = Parent()
         parent.user = userId
         parent.session = sessionId
 
-        consentSettings.append(getUserData(parent: parent))
-        consentSettings.append(getConsentData(parent: parent, consentId: consentId, vendors: vendors, vendorsChanged: vendorsChanged))
+        trackingData.client = getClient()
+        trackingData.data.append(getUserData(parent: parent))
+        trackingData.data.append(getConsentData(parent: parent, consentId: consentId, vendors: vendors, vendorsChanged: vendorsChanged))
 
         // FIXME: Remove
-        let jsonData = try! JSONEncoder().encode(consentSettings)
+        let jsonData = try! JSONEncoder().encode(trackingData)
         let jsonString = String(data: jsonData, encoding: .utf8)!
 
-        API.shared.setConsentSettings(consentSettings) { [weak self] in
+        API.shared.setConsentSettings(trackingData) { [weak self] in
             guard let self = self else {
                 return
             }

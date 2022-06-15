@@ -11,10 +11,10 @@ class API {
         self.baseUrl = URL(string: baseUrl)
     }
 
-    func setConsentSettings(_ settings: [TrackingDataDatum], completion : @escaping () -> Void) {
+    func setConsentSettings(_ trackingData: TrackingData, completion : @escaping () -> Void) {
         do {
             let encoder = JSONEncoder()
-            let jsonData = try encoder.encode(settings)
+            let jsonData = try encoder.encode(trackingData)
 
             submitTracking(jsonData) {
                 completion()
