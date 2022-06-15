@@ -1,7 +1,7 @@
 import Jentis
 import SwiftUI
 
-struct FirstScreen: View {
+struct MainScreen: View {
     init() {
         let config = TrackConfig(trackDomain: "https://kndmjh.allaboutapps.jtm-demo.com/", trackID: "allaboutapps", environment: .live)
 
@@ -12,15 +12,12 @@ struct FirstScreen: View {
     var body: some View {
         NavigationView {
             List {
-                NavigationLink(destination: SecondScreen()) {
-                    Text("Second Screen")
+                NavigationLink(destination: ConsentScreen()) {
+                    Text("Consent Screen")
                 }
-                NavigationLink(destination: ThirdScreen()) {
-                    Text("Third Screen")
+                NavigationLink(destination: TrackingScreen()) {
+                    Text("Tracking Screen")
                 }
-            }
-            .onAppear {
-                TrackService.shared.trackDefault(currentView: "FirstScreen")
             }
             .navigationTitle("First Screen")
         }
@@ -29,6 +26,6 @@ struct FirstScreen: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        FirstScreen()
+        MainScreen()
     }
 }

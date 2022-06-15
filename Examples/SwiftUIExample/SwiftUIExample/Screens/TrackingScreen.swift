@@ -1,7 +1,7 @@
 import SwiftUI
 import Jentis
 
-struct ThirdScreen: View {
+struct TrackingScreen: View {
     var body: some View {
         Text("👋🏻")
             .onAppear {
@@ -13,6 +13,6 @@ struct ThirdScreen: View {
 
 struct ThirdScreen_Previews: PreviewProvider {
     static var previews: some View {
-        ThirdScreen()
+        TrackingScreen()
     }
 }

@@ -10,11 +10,11 @@
 		2704A1522858B94D00A50066 /* SwiftUIExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2704A1512858B94D00A50066 /* SwiftUIExampleApp.swift */; };
 		2704A1562858B94D00A50066 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2704A1552858B94D00A50066 /* Assets.xcassets */; };
 		2704A1592858B94D00A50066 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2704A1582858B94D00A50066 /* Preview Assets.xcassets */; };
-		2704A1632858B9C500A50066 /* SecondScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2704A15F2858B9C500A50066 /* SecondScreen.swift */; };
-		2704A1642858B9C500A50066 /* FirstScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2704A1602858B9C500A50066 /* FirstScreen.swift */; };
-		2704A1652858B9C500A50066 /* ThirdScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2704A1612858B9C500A50066 /* ThirdScreen.swift */; };
-		2704A1662858B9C500A50066 /* jentisConsent.json in Resources */ = {isa = PBXBuildFile; fileRef = 2704A1622858B9C500A50066 /* jentisConsent.json */; };
 		273376412858EEA10084D5F8 /* Jentis in Frameworks */ = {isa = PBXBuildFile; productRef = 273376402858EEA10084D5F8 /* Jentis */; };
+		273376452859DA9E0084D5F8 /* TrackingOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 273376442859DA9E0084D5F8 /* TrackingOptions.swift */; };
+		273376492859F3D10084D5F8 /* ConsentScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 273376462859F3D10084D5F8 /* ConsentScreen.swift */; };
+		2733764A2859F3D10084D5F8 /* TrackingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 273376472859F3D10084D5F8 /* TrackingScreen.swift */; };
+		2733764B2859F3D10084D5F8 /* MainScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 273376482859F3D10084D5F8 /* MainScreen.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,11 +22,11 @@
 		2704A1512858B94D00A50066 /* SwiftUIExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIExampleApp.swift; sourceTree = "<group>"; };
 		2704A1552858B94D00A50066 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2704A1582858B94D00A50066 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		2704A15F2858B9C500A50066 /* SecondScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecondScreen.swift; sourceTree = "<group>"; };
-		2704A1602858B9C500A50066 /* FirstScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirstScreen.swift; sourceTree = "<group>"; };
-		2704A1612858B9C500A50066 /* ThirdScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThirdScreen.swift; sourceTree = "<group>"; };
-		2704A1622858B9C500A50066 /* jentisConsent.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = jentisConsent.json; sourceTree = "<group>"; };
 		2733763F2858EE460084D5F8 /* jentis-ios */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "jentis-ios"; path = ../..; sourceTree = "<group>"; };
+		273376442859DA9E0084D5F8 /* TrackingOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingOptions.swift; sourceTree = "<group>"; };
+		273376462859F3D10084D5F8 /* ConsentScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConsentScreen.swift; sourceTree = "<group>"; };
+		273376472859F3D10084D5F8 /* TrackingScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackingScreen.swift; sourceTree = "<group>"; };
+		273376482859F3D10084D5F8 /* MainScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainScreen.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,11 +62,9 @@
 		2704A1502858B94D00A50066 /* SwiftUIExample */ = {
 			isa = PBXGroup;
 			children = (
+				273376432859DA900084D5F8 /* Models */,
+				273376422859DA870084D5F8 /* Screens */,
 				2704A1512858B94D00A50066 /* SwiftUIExampleApp.swift */,
-				2704A1602858B9C500A50066 /* FirstScreen.swift */,
-				2704A1622858B9C500A50066 /* jentisConsent.json */,
-				2704A15F2858B9C500A50066 /* SecondScreen.swift */,
-				2704A1612858B9C500A50066 /* ThirdScreen.swift */,
 				2704A1552858B94D00A50066 /* Assets.xcassets */,
 				2704A1572858B94D00A50066 /* Preview Content */,
 			);
@@ -94,6 +92,24 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		273376422859DA870084D5F8 /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				273376462859F3D10084D5F8 /* ConsentScreen.swift */,
+				273376482859F3D10084D5F8 /* MainScreen.swift */,
+				273376472859F3D10084D5F8 /* TrackingScreen.swift */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
+		273376432859DA900084D5F8 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				273376442859DA9E0084D5F8 /* TrackingOptions.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -157,7 +173,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2704A1662858B9C500A50066 /* jentisConsent.json in Resources */,
 				2704A1592858B94D00A50066 /* Preview Assets.xcassets in Resources */,
 				2704A1562858B94D00A50066 /* Assets.xcassets in Resources */,
 			);
@@ -170,10 +185,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2704A1642858B9C500A50066 /* FirstScreen.swift in Sources */,
-				2704A1652858B9C500A50066 /* ThirdScreen.swift in Sources */,
+				273376452859DA9E0084D5F8 /* TrackingOptions.swift in Sources */,
+				273376492859F3D10084D5F8 /* ConsentScreen.swift in Sources */,
+				2733764B2859F3D10084D5F8 /* MainScreen.swift in Sources */,
+				2733764A2859F3D10084D5F8 /* TrackingScreen.swift in Sources */,
 				2704A1522858B94D00A50066 /* SwiftUIExampleApp.swift in Sources */,
-				2704A1632858B9C500A50066 /* SecondScreen.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

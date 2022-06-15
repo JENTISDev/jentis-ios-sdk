@@ -35,7 +35,7 @@ public class TrackService {
             self.userId = userId
         } else {
             userId = String.randomId()
-            UserSettings.shared.setUserID(userId: userId)
+            UserSettings.shared.setUserID(userId)
         }
 
         sessionId = String.randomId()
@@ -49,9 +49,7 @@ public class TrackService {
     /// - Parameter config: Contains the Configuration to initialize the SDK
     public func initTracking(config: TrackConfig) {
         if let consent = UserSettings.shared.getConsents() {
-            self.consents = consent
-        } else {
-            loadConsentsFromJson()
+            consents = consent
         }
 
         self.config = config
@@ -63,12 +61,49 @@ public class TrackService {
     public func getCurrentConsents() -> [String: Bool]? {
         consents
     }
-    
+
+    // FIXME: Todo
+    public func getConsentId() -> String? {
+        UserSettings.shared.getConsentId()
+    }
+
     /// Set new consent values
     /// - Parameter consents: A list of the new Consents with true/false
-    public func setNewConsents(consents: [String: Bool]) {
+    public func setConsents(consents: [String: Bool]) {
+        let previousConsents = UserSettings.shared.getConsents()
+        let consentId = UserSettings.shared.getConsentId() ?? UUID().uuidString
+        UserSettings.shared.setConsentId(consentId)
+        
+        var diffDict: [String: Bool] = [:]
+        if let previousConsents = previousConsents {
+            for previousConsent in previousConsents {
+                if previousConsents[previousConsent.key] != consents[previousConsent.key] {
+                    diffDict[previousConsent.key] = consents[previousConsent.key]
+                }
+            }
+        }
+        
         self.consents = consents
-        UserSettings.shared.setConsents(consents: consents)
+        UserSettings.shared.setConsents(consents)
+        
+        sendConsentSettings(consentId: consentId, vendors: consents, vendorsChanged: diffDict)
+    }
+
+    private func sendConsentSettings(consentId: String, vendors: [String: Bool], vendorsChanged: [String: Bool]) {
+        var consentSettings: [TrackingDataDatum] = []
+
+        let parent = Parent()
+        parent.user = userId
+        parent.session = sessionId
+
+        consentSettings.append(getUserData(parent: parent))
+        consentSettings.append(getConsentData(parent: parent, consentId: consentId, vendors: vendors, vendorsChanged: vendorsChanged))
+        
+        // FIXME: Remove
+        let jsonData = try! JSONEncoder().encode(consentSettings)
+        let jsonString = String(data: jsonData, encoding: .utf8)!
+        
+        API.shared.setConsentSettings(consentSettings)
     }
 
     /// Enable tracking
@@ -177,6 +212,36 @@ public class TrackService {
         return trackingData
     }
 
+    func getConsentData(parent: Parent, consentId: String, vendors: [String: Bool], vendorsChanged: [String: Bool]) -> TrackingDataDatum {
+        let timestamp = Date().millisecondsSince1970
+        
+        UserSettings.shared.setLastConsentUpdate(timestamp: timestamp)
+
+        let consentData = TrackingDataDatum()
+        consentData.id = String.randomId()
+        consentData.documentType = Config.DocumentType.consent.rawValue
+
+        consentData.action = Config.Action.new.rawValue
+
+        let consentDataParent = Parent()
+        consentDataParent.user = parent.user
+        consentData.parent = consentDataParent
+
+        consentData.account = "\(config!.trackID).\(config!.environment.rawValue)"
+
+        let consentDataProperty = Property()
+        consentDataProperty.track = Config.Tracking.Track.consent.rawValue
+        consentDataProperty.consentid = consentId
+        consentDataProperty.lastupdate = timestamp
+        consentDataProperty.vendors = vendors
+        consentDataProperty.send = true
+        consentDataProperty.userconsent = true
+        consentDataProperty.vendorsChanged = vendorsChanged
+        consentData.property = consentDataProperty
+
+        return consentData
+    }
+
     func getUserData(parent: Parent) -> TrackingDataDatum {
         let userData = TrackingDataDatum()
         userData.id = parent.user
@@ -257,7 +322,7 @@ public class TrackService {
     func getClient() -> Client {
         let client = Client()
 
-        client.clientTimestamp = Int(NSDate().timeIntervalSince1970)
+        client.clientTimestamp = Date().millisecondsSince1970
 
         // Use App Name for Domain
         client.domain = "\(config!.trackDomain).\(Bundle.main.infoDictionary?[kCFBundleNameKey as String] as? String ?? "")"
@@ -271,22 +336,6 @@ public class TrackService {
             return true
         } else {
             return false
-        }
-    }
-
-    private func loadConsentsFromJson() {
-        guard let url = Bundle.main.url(forResource: "jentisConsent", withExtension: "json") else {
-            fatalError("jentisConsent.json is missing!")
-        }
-
-        do {
-            let data = try Data(contentsOf: url)
-            consents = try JSONDecoder().decode([String: Bool].self, from: data)
-            if let consent = consents {
-                UserSettings.shared.setConsents(consents: consent)
-            }
-        } catch {
-            print("[JENTIS] Error - Unable to parse jentisConsent")
         }
     }
 

@@ -11,6 +11,10 @@ struct Config {
         static let idLength = 23
         static let pluginId = "jts_push_submit"
         static let sessionDuration = 30
+        
+        enum Track: String {
+            case consent, pageview, submit
+        }
     }
     
     enum Action: String {
@@ -18,6 +22,6 @@ struct Config {
     }
     
     enum DocumentType: String {
-        case user, session, event
+        case user, session, event, consent
     }
 }

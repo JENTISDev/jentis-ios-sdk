@@ -4,7 +4,7 @@ import Foundation
 
 class TrackingData: Codable {
     var client: Client?
-    var cmd: Cmd = Cmd()
+    var cmd: Cmd = .init()
     var data: [TrackingDataDatum] = []
 
     init() {}
@@ -19,12 +19,12 @@ class TrackingData: Codable {
 // MARK: - Client
 
 class Client: Codable {
-    var clientTimestamp: Int?
+    var clientTimestamp: Int64?
     var domain: String?
-    
+
     init() {}
 
-    init(clientTimestamp: Int?, domain: String?) {
+    init(clientTimestamp: Int64?, domain: String?) {
         self.clientTimestamp = clientTimestamp
         self.domain = domain
     }
@@ -35,7 +35,7 @@ class Client: Codable {
 class Cmd: Codable {
     var key: String?
     var data: [CmdDatum]?
-    
+
     init() {}
 
     init(key: String?, data: [CmdDatum]?) {
@@ -50,7 +50,7 @@ class CmdDatum: Codable {
     var name, value: String?
     var exdays: Int?
     var pluginids: [String]?
-    
+
     init() {}
 
     init(name: String?, value: String?, exdays: Int?, pluginids: [String]?) {
@@ -65,17 +65,17 @@ class CmdDatum: Codable {
 
 class TrackingDataDatum: Codable {
     var id, action, account, documentType: String?
-    var property: Property = Property()
-    var system: System = System()
-    var aggr: Aggr = Aggr()
-    var parent: Parent = Parent()
+    var property: Property = .init()
+    var system: System = .init()
+    var aggr: Aggr = .init()
+    var parent: Parent = .init()
     var pluginid: String?
 
     enum CodingKeys: String, CodingKey {
         case id = "_id"
         case action, account, documentType, property, system, aggr, parent, pluginid
     }
-    
+
     init() {}
 
     init(id: String?, action: String?, account: String?, documentType: String?, property: Property?, system: System?, aggr: Aggr?, parent: Parent?, pluginid: String?) {
@@ -102,7 +102,7 @@ class Aggr: Codable {
 
 class Parent: Codable {
     var user, session: String?
-    
+
     init() {}
 
     init(user: String?, session: String?) {
@@ -114,8 +114,9 @@ class Parent: Codable {
 // MARK: - Property
 
 class Property: Codable {
-    var navigatorLanguage, navigatorUseragent: String?
+    var navigatorLanguage, navigatorUseragent, track, consentid: String?
     var windowScreenWidth, windowScreenHeight: Int?
+    var lastupdate: Int64?
     var documentCharacterset, navigatorJavaenabled: String?
     var windowViewportWidth, windowViewportHeight, windowScreenColordepth: Int?
     var sessionDocID, navigatorPlatform, navigatorCookieenabled: String?
@@ -145,6 +146,8 @@ class Property: Codable {
     var jtsSysTrigger: JtsSysTrigger?
     var productBrand, productCategory: [JSONAny]?
     var hashedPlugins, randomNumber1E6: Int?
+    var vendors, vendorsChanged: [String: Bool]?
+    var send, userconsent: Bool?
 
     enum CodingKeys: String, CodingKey {
         case navigatorLanguage = "navigator_language"
@@ -204,12 +207,26 @@ class Property: Codable {
         case productCategory = "product_category"
         case hashedPlugins = "hashed-plugins"
         case randomNumber1E6 = "random_number_1e6"
+        case track
+        case consentid
+        case lastupdate
+        case vendors
+        case vendorsChanged
+        case send
+        case userconsent
     }
-    
+
     init() {}
 
-    init(navigatorLanguage: String?, navigatorUseragent: String?, windowScreenWidth: Int?, windowScreenHeight: Int?, documentCharacterset: String?, navigatorJavaenabled: String?, windowViewportWidth: Int?, windowViewportHeight: Int?, windowScreenColordepth: Int?, sessionDocID: String?, navigatorPlatform: String?, navigatorCookieenabled: String?, windowScreenAvailwidth: Int?, windowScreenAvailheight: Int?, navigatorLanguages: [String]?, timezoneOffsetMinutes: Int?, adfCookieID: String?, jtsVersion: String?, jtsDebug: String?, jtspushedcommands: [String]?, gaFeCid: String?, gaFeGid: String?, documentRef: String?, documentTitle: String?, windowLocationHref: String?, searchParamUtmTerm: String?, searchParamUtmMedium: String?, searchParamUtmSource: String?, searchParamUtmContent: String?, gaOptimizeExperimentID: String?, searchParamUtmCampaign: String?, dateNow: Int?, readCookies: Cookies?, rtbLid: String?, userDocID: String?, cookies: Cookies?, eventDocID: String?, urlParameters: Aggr?, documentLocationHref: String?, searchParamEmid: String?, hrefPathname: String?, hubsBrowserFingerprint: Int?, obBust: String?, orderBrutto: String?, orderID: String?, orderDiscount: String?, orderVouchers: String?, documentRefDiff: String?, jConsentID: String?, adfAdvertiserDomain: String?, fbClickID: String?, fbBrowserID: String?, jtsSysTrigger: JtsSysTrigger?, productBrand: [JSONAny]?, productCategory: [JSONAny]?, hashedPlugins: Int?, randomNumber1E6: Int?) {
+    init(navigatorLanguage: String?, send: Bool?, navigatorUseragent: String?, windowScreenWidth: Int?, windowScreenHeight: Int?, documentCharacterset: String?, navigatorJavaenabled: String?, userconsent: Bool?, windowViewportWidth: Int?, windowViewportHeight: Int?, windowScreenColordepth: Int?, sessionDocID: String?, navigatorPlatform: String?, vendorsChanged: [String: Bool]?, navigatorCookieenabled: String?, track: String?, windowScreenAvailwidth: Int?, windowScreenAvailheight: Int?, navigatorLanguages: [String]?, timezoneOffsetMinutes: Int?, adfCookieID: String?, jtsVersion: String?, jtsDebug: String?, jtspushedcommands: [String]?, gaFeCid: String?, gaFeGid: String?, documentRef: String?, vendors: [String: Bool]?, consentid: String?, documentTitle: String?, windowLocationHref: String?, searchParamUtmTerm: String?, searchParamUtmMedium: String?, searchParamUtmSource: String?, searchParamUtmContent: String?, gaOptimizeExperimentID: String?, searchParamUtmCampaign: String?, dateNow: Int?, readCookies: Cookies?, lastUpdate: Int64?, rtbLid: String?, userDocID: String?, cookies: Cookies?, eventDocID: String?, urlParameters: Aggr?, documentLocationHref: String?, searchParamEmid: String?, hrefPathname: String?, hubsBrowserFingerprint: Int?, obBust: String?, orderBrutto: String?, orderID: String?, orderDiscount: String?, orderVouchers: String?, documentRefDiff: String?, jConsentID: String?, adfAdvertiserDomain: String?, fbClickID: String?, fbBrowserID: String?, jtsSysTrigger: JtsSysTrigger?, productBrand: [JSONAny]?, productCategory: [JSONAny]?, hashedPlugins: Int?, randomNumber1E6: Int?) {
         self.navigatorLanguage = navigatorLanguage
+        self.track = track
+        self.vendors = vendors
+        self.userconsent = userconsent
+        self.vendorsChanged = vendorsChanged
+        self.send = send
+        self.consentid = consentid
+        self.lastupdate = lastUpdate
         self.navigatorUseragent = navigatorUseragent
         self.windowScreenWidth = windowScreenWidth
         self.windowScreenHeight = windowScreenHeight
@@ -299,7 +316,7 @@ class Cookies: Codable {
         case ctoBundle = "cto_bundle"
         case ga3Z29BF112E = "_ga_3Z29BF112E"
     }
-    
+
     init() {}
 
     init(jtsLog: String?, fbp: String?, jtsRw: String?, jtsFbp: String?, jtsGaFeGid: String?, jtsGaFeCid: String?, fbc: String?, jtsFbc: String?, ga: String?, gclAu: String?, gclAw: String?, jAdfID: String?, jctrSid: String?, pkSes0066: String?, gatGtagUA220398793_2: String?, jtsGa: String?, jtsGaGid: String?, ctoBundle: String?, ga3Z29BF112E: String?) {
@@ -333,7 +350,7 @@ class JtsSysTrigger: Codable {
     enum CodingKeys: String, CodingKey {
         case pageviewWithoutExclude = "pageview_without_exclude"
     }
-    
+
     init() {}
 
     init(pageviewWithoutExclude: PageviewWithoutExclude?) {
@@ -349,7 +366,7 @@ class PageviewWithoutExclude: Codable {
     enum CodingKeys: String, CodingKey {
         case fbEventID = "fb_event_id"
     }
-    
+
     init() {}
 
     init(fbEventID: String?) {
@@ -368,7 +385,7 @@ class System: Codable {
         case navigatorUserAgent = "navigator-userAgent"
         case href, consent
     }
-    
+
     init() {}
 
     init(navigatorUserAgent: String?, href: String?, consent: [String: Bool]?) {
@@ -389,7 +406,7 @@ class JSONNull: Codable, Hashable {
     public var hashValue: Int {
         return 0
     }
-    
+
     public init() {}
 
     public required init(from decoder: Decoder) throws {
