@@ -5,9 +5,10 @@ struct TrackingScreen: View {
     var body: some View {
         Text("👋🏻")
             .onAppear {
-                TrackService.shared.trackDefault(currentView: "ThirdScreen")
+                TrackService.shared.push(data: ["track":"pageview", "pagetitle":"Tracking Screen", "virtualPagePath":"MainScreen/TrackingScreen"])
+                TrackService.shared.push(data: ["track":"submit"])
             }
-            .navigationTitle("Third Screen")
+            .navigationTitle("Tracking Screen")
     }
 }
 

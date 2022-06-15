@@ -66,7 +66,7 @@ class CmdDatum: Codable {
 class TrackingDataDatum: Codable {
     var id, action, account, documentType: String?
     var property: Property = .init()
-    var system: System = .init()
+    var system: System?
     var aggr: Aggr = .init()
     var parent: Parent = .init()
     var pluginid: String?
@@ -84,7 +84,7 @@ class TrackingDataDatum: Codable {
         self.account = account
         self.documentType = documentType
         self.property = property ?? Property()
-        self.system = system ?? System()
+        self.system = system
         self.aggr = aggr ?? Aggr()
         self.parent = parent ?? Parent()
         self.pluginid = pluginid

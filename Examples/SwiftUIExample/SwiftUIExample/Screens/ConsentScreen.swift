@@ -20,7 +20,7 @@ struct ConsentScreen: View {
             } else {
                 var dict: [String: Bool] = [:]
                 for trackingOption in TrackingOptions.allCases {
-                    dict[trackingOption.rawValue] = true
+                    dict[trackingOption.rawValue] = false
                 }
                 trackingSelections = dict
             }

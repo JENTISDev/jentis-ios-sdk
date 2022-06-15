@@ -10,13 +10,15 @@ class API {
     func setup(baseUrl: String) {
         self.baseUrl = URL(string: baseUrl)
     }
-    
-    func setConsentSettings(_ settings: [TrackingDataDatum]) {
+
+    func setConsentSettings(_ settings: [TrackingDataDatum], completion : @escaping () -> Void) {
         do {
             let encoder = JSONEncoder()
             let jsonData = try encoder.encode(settings)
 
-            submitTracking(jsonData)
+            submitTracking(jsonData) {
+                completion()
+            }
         } catch {
             print(error)
         }
@@ -27,30 +29,32 @@ class API {
             let encoder = JSONEncoder()
             let jsonData = try encoder.encode(trackingData)
 
-            submitTracking(jsonData)
+            submitTracking(jsonData){}
         } catch {
             print(error)
         }
     }
-    
+
     func trackCustom(_ customData: Data) {
-        submitTracking(customData)
+        submitTracking(customData){}
     }
-    
-    private func submitTracking(_ data: Data) {
+
+    func submitTracking(_ data: Data, completion : @escaping () -> Void) {
         guard let baseUrl = baseUrl else {
             return
         }
-        
+
         var request = URLRequest(url: baseUrl)
         request.httpMethod = "POST"
         request.httpBody = data
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        URLSession.shared.dataTask(with: request) { (data, response, error) in
+
+        URLSession.shared.dataTask(with: request) { _, response, _ in
             if let httpResponse = response as? HTTPURLResponse {
-                    print(httpResponse.statusCode)
-                }
+                print(httpResponse.statusCode)
+                
+                completion()
+            }
         }.resume()
     }
 }
