@@ -1,10 +1,3 @@
-//
-//  File.swift
-//  
-//
-//  Created by Andreas Mühleder on 14.06.22.
-//
-
 import Foundation
 import UIKit
 
