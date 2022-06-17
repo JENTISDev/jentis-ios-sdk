@@ -2,7 +2,7 @@ import Foundation
 
 // MARK: - TrackingData
 
-class TrackingData: Codable {
+class JentisData: Codable {
     var client: Client?
     var cmd: Cmd = .init()
     var data: [TrackingDataDatum] = []
@@ -114,175 +114,79 @@ class Parent: Codable {
 // MARK: - Property
 
 class Property: Codable {
-    var navigatorLanguage, navigatorUseragent, track, consentid: String?
-    var windowScreenWidth, windowScreenHeight: Int?
-    var lastupdate: Int64?
-    var documentCharacterset, navigatorJavaenabled: String?
-    var windowViewportWidth, windowViewportHeight, windowScreenColordepth: Int?
-    var sessionDocID, navigatorPlatform, navigatorCookieenabled: String?
-    var windowScreenAvailwidth, windowScreenAvailheight: Int?
-    var navigatorLanguages: [String]?
-    var timezoneOffsetMinutes: Int?
-    var adfCookieID, jtsVersion, jtsDebug: String?
+    var appDeviceBrand, appDeviceModel, appDeviceOS, appDeviceOSVersion: String?
+    var appDeviceLanguage: String?
+    var appDeviceWidth, appDeviceHeight: Int?
+    var appApplicationName, appApplicationVersion: String?
+    var appApplicationBuildNumber: String?
+    var jtsDebug, jtsVersion: String?
     var jtspushedcommands: [String]?
-    var gaFeCid, gaFeGid: String?
     var documentRef: String?
     var documentTitle: String?
     var windowLocationHref: String?
-    var searchParamUtmTerm, searchParamUtmMedium, searchParamUtmSource, searchParamUtmContent: String?
-    var gaOptimizeExperimentID, searchParamUtmCampaign: String?
     var dateNow: Int?
-    var readCookies: Cookies?
-    var rtbLid, userDocID: String?
-    var cookies: Cookies?
-    var eventDocID: String?
-    var urlParameters: Aggr?
+    var userDocID, eventDocID: String?
     var documentLocationHref: String?
-    var searchParamEmid, hrefPathname: String?
-    var hubsBrowserFingerprint: Int?
-    var obBust, orderBrutto, orderID, orderDiscount: String?
-    var orderVouchers, documentRefDiff, jConsentID, adfAdvertiserDomain: String?
-    var fbClickID, fbBrowserID: String?
-    var jtsSysTrigger: JtsSysTrigger?
-    var productBrand, productCategory: [JSONAny]?
-    var hashedPlugins, randomNumber1E6: Int?
-    var vendors, vendorsChanged: [String: Bool]?
+    var track, consentid: String?
+    var lastupdate: Int64?
+    var vendors: [String: Bool]?
     var send, userconsent: Bool?
+    var vendorsChanged: [String: Bool]?
 
     enum CodingKeys: String, CodingKey {
-        case navigatorLanguage = "navigator_language"
-        case navigatorUseragent = "navigator_useragent"
-        case windowScreenWidth = "window_screen_width"
-        case windowScreenHeight = "window_screen_height"
-        case documentCharacterset = "document_characterset"
-        case navigatorJavaenabled = "navigator_javaenabled"
-        case windowViewportWidth = "window_viewport_width"
-        case windowViewportHeight = "window_viewport_height"
-        case windowScreenColordepth = "window_screen_colordepth"
-        case sessionDocID = "session_doc_id"
-        case navigatorPlatform = "navigator_platform"
-        case navigatorCookieenabled = "navigator_cookieenabled"
-        case windowScreenAvailwidth = "window_screen_availwidth"
-        case windowScreenAvailheight = "window_screen_availheight"
-        case navigatorLanguages = "navigator_languages"
-        case timezoneOffsetMinutes = "timezone_offset_minutes"
-        case adfCookieID = "adf_cookie_id"
-        case jtsVersion = "jts_version"
+        case appDeviceBrand = "app_device_brand"
+        case appDeviceModel = "app_device_model"
+        case appDeviceOS = "app_device_os"
+        case appDeviceOSVersion = "app_device_os_version"
+        case appDeviceLanguage = "app_device_language"
+        case appDeviceWidth = "app_device_width"
+        case appDeviceHeight = "app_device_height"
+        case appApplicationName = "app_application_name"
+        case appApplicationVersion = "app_application_version"
+        case appApplicationBuildNumber = "app_application_build_number"
         case jtsDebug = "jts_debug"
+        case jtsVersion = "jts_version"
         case jtspushedcommands
-        case gaFeCid = "ga_fe_cid"
-        case gaFeGid = "ga_fe_gid"
         case documentRef = "document_ref"
         case documentTitle = "document_title"
         case windowLocationHref = "window_location_href"
-        case searchParamUtmTerm = "search_param_utm_term"
-        case searchParamUtmMedium = "search_param_utm_medium"
-        case searchParamUtmSource = "search_param_utm_source"
-        case searchParamUtmContent = "search_param_utm_content"
-        case gaOptimizeExperimentID = "ga_optimize_experiment_id"
-        case searchParamUtmCampaign = "search_param_utm_campaign"
         case dateNow = "date_now"
-        case readCookies = "read_cookies"
-        case rtbLid = "rtb_lid"
         case userDocID = "user_doc_id"
-        case cookies
         case eventDocID = "event_doc_id"
-        case urlParameters = "url_parameters"
         case documentLocationHref = "document_location_href"
-        case searchParamEmid = "search_param_emid"
-        case hrefPathname = "href_pathname"
-        case hubsBrowserFingerprint = "hubs_browser_fingerprint"
-        case obBust = "ob_bust"
-        case orderBrutto = "order_brutto"
-        case orderID = "order_id"
-        case orderDiscount = "order_discount"
-        case orderVouchers = "order_vouchers"
-        case documentRefDiff = "document_ref_diff"
-        case jConsentID = "j_consent_id"
-        case adfAdvertiserDomain = "adf_advertiser_domain"
-        case fbClickID = "fb_click_id"
-        case fbBrowserID = "fb_browser_id"
-        case jtsSysTrigger = "_jts_sys_trigger"
-        case productBrand = "product_brand"
-        case productCategory = "product_category"
-        case hashedPlugins = "hashed-plugins"
-        case randomNumber1E6 = "random_number_1e6"
-        case track
-        case consentid
-        case lastupdate
-        case vendors
-        case vendorsChanged
-        case send
-        case userconsent
+        case track, consentid, lastupdate, vendors, send, userconsent, vendorsChanged
     }
 
     init() {}
 
-    init(navigatorLanguage: String?, send: Bool?, navigatorUseragent: String?, windowScreenWidth: Int?, windowScreenHeight: Int?, documentCharacterset: String?, navigatorJavaenabled: String?, userconsent: Bool?, windowViewportWidth: Int?, windowViewportHeight: Int?, windowScreenColordepth: Int?, sessionDocID: String?, navigatorPlatform: String?, vendorsChanged: [String: Bool]?, navigatorCookieenabled: String?, track: String?, windowScreenAvailwidth: Int?, windowScreenAvailheight: Int?, navigatorLanguages: [String]?, timezoneOffsetMinutes: Int?, adfCookieID: String?, jtsVersion: String?, jtsDebug: String?, jtspushedcommands: [String]?, gaFeCid: String?, gaFeGid: String?, documentRef: String?, vendors: [String: Bool]?, consentid: String?, documentTitle: String?, windowLocationHref: String?, searchParamUtmTerm: String?, searchParamUtmMedium: String?, searchParamUtmSource: String?, searchParamUtmContent: String?, gaOptimizeExperimentID: String?, searchParamUtmCampaign: String?, dateNow: Int?, readCookies: Cookies?, lastUpdate: Int64?, rtbLid: String?, userDocID: String?, cookies: Cookies?, eventDocID: String?, urlParameters: Aggr?, documentLocationHref: String?, searchParamEmid: String?, hrefPathname: String?, hubsBrowserFingerprint: Int?, obBust: String?, orderBrutto: String?, orderID: String?, orderDiscount: String?, orderVouchers: String?, documentRefDiff: String?, jConsentID: String?, adfAdvertiserDomain: String?, fbClickID: String?, fbBrowserID: String?, jtsSysTrigger: JtsSysTrigger?, productBrand: [JSONAny]?, productCategory: [JSONAny]?, hashedPlugins: Int?, randomNumber1E6: Int?) {
-        self.navigatorLanguage = navigatorLanguage
-        self.track = track
-        self.vendors = vendors
-        self.userconsent = userconsent
-        self.vendorsChanged = vendorsChanged
-        self.send = send
-        self.consentid = consentid
-        self.lastupdate = lastUpdate
-        self.navigatorUseragent = navigatorUseragent
-        self.windowScreenWidth = windowScreenWidth
-        self.windowScreenHeight = windowScreenHeight
-        self.documentCharacterset = documentCharacterset
-        self.navigatorJavaenabled = navigatorJavaenabled
-        self.windowViewportWidth = windowViewportWidth
-        self.windowViewportHeight = windowViewportHeight
-        self.windowScreenColordepth = windowScreenColordepth
-        self.sessionDocID = sessionDocID
-        self.navigatorPlatform = navigatorPlatform
-        self.navigatorCookieenabled = navigatorCookieenabled
-        self.windowScreenAvailwidth = windowScreenAvailwidth
-        self.windowScreenAvailheight = windowScreenAvailheight
-        self.navigatorLanguages = navigatorLanguages
-        self.timezoneOffsetMinutes = timezoneOffsetMinutes
-        self.adfCookieID = adfCookieID
-        self.jtsVersion = jtsVersion
+    init(appDeviceBrand: String?, appDeviceModel: String?, appDeviceOS: String?, appDeviceOSVersion: String?, appDeviceLanguage: String?, appDeviceWidth: Int?, appDeviceHeight: Int?, appApplicationName: String?, appApplicationVersion: String?, appApplicationBuildNumber: String?, jtsDebug: String?, jtsVersion: String?, jtspushedcommands: [String]?, documentRef: String?, documentTitle: String?, windowLocationHref: String?, dateNow: Int?, userDocID: String?, eventDocID: String?, documentLocationHref: String?, track: String?, consentid: String?, lastupdate: Int64?, vendors: [String: Bool]?, send: Bool?, userconsent: Bool?, vendorsChanged: [String: Bool]?) {
+        self.appDeviceBrand = appDeviceBrand
+        self.appDeviceModel = appDeviceModel
+        self.appDeviceOS = appDeviceOS
+        self.appDeviceOSVersion = appDeviceOSVersion
+        self.appDeviceLanguage = appDeviceLanguage
+        self.appDeviceWidth = appDeviceWidth
+        self.appDeviceHeight = appDeviceHeight
+        self.appApplicationName = appApplicationName
+        self.appApplicationVersion = appApplicationVersion
+        self.appApplicationBuildNumber = appApplicationBuildNumber
         self.jtsDebug = jtsDebug
+        self.jtsVersion = jtsVersion
         self.jtspushedcommands = jtspushedcommands
-        self.gaFeCid = gaFeCid
-        self.gaFeGid = gaFeGid
         self.documentRef = documentRef
         self.documentTitle = documentTitle
         self.windowLocationHref = windowLocationHref
-        self.searchParamUtmTerm = searchParamUtmTerm
-        self.searchParamUtmMedium = searchParamUtmMedium
-        self.searchParamUtmSource = searchParamUtmSource
-        self.searchParamUtmContent = searchParamUtmContent
-        self.gaOptimizeExperimentID = gaOptimizeExperimentID
-        self.searchParamUtmCampaign = searchParamUtmCampaign
         self.dateNow = dateNow
-        self.readCookies = readCookies
-        self.rtbLid = rtbLid
         self.userDocID = userDocID
-        self.cookies = cookies
         self.eventDocID = eventDocID
-        self.urlParameters = urlParameters
         self.documentLocationHref = documentLocationHref
-        self.searchParamEmid = searchParamEmid
-        self.hrefPathname = hrefPathname
-        self.hubsBrowserFingerprint = hubsBrowserFingerprint
-        self.obBust = obBust
-        self.orderBrutto = orderBrutto
-        self.orderID = orderID
-        self.orderDiscount = orderDiscount
-        self.orderVouchers = orderVouchers
-        self.documentRefDiff = documentRefDiff
-        self.jConsentID = jConsentID
-        self.adfAdvertiserDomain = adfAdvertiserDomain
-        self.fbClickID = fbClickID
-        self.fbBrowserID = fbBrowserID
-        self.jtsSysTrigger = jtsSysTrigger
-        self.productBrand = productBrand
-        self.productCategory = productCategory
-        self.hashedPlugins = hashedPlugins
-        self.randomNumber1E6 = randomNumber1E6
+        self.track = track
+        self.consentid = consentid
+        self.lastupdate = lastupdate
+        self.vendors = vendors
+        self.send = send
+        self.userconsent = userconsent
+        self.vendorsChanged = vendorsChanged
     }
 }
 

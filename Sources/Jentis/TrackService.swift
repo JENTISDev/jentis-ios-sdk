@@ -9,6 +9,11 @@ struct DebugInformation {
     var version: String?
 }
 
+public enum JentisError: Error {
+    case setConsentError
+    case requestError
+}
+
 // MARK: TrackService
 
 /// The service which manages the tracking to Jentis
@@ -64,7 +69,8 @@ public class TrackService {
         consents
     }
 
-    // FIXME: Todo
+    /// Get the current consent ID
+    /// - Returns: The current consent ID if it was created already
     public func getConsentId() -> String? {
         UserSettings.shared.getConsentId()
     }
@@ -72,7 +78,8 @@ public class TrackService {
     /// Set new consent values
     /// Trackings which were stored previously (while consent was nil) are sent automatically (if at least one tracking provider is enabled)
     /// - Parameter consents: A list of the new Consents with true/false
-    public func setConsents(consents: [String: Bool]) {
+    /// - Parameter completion: Contains the information whether the request was successful or not
+    public func setConsents(consents: [String: Bool], completion: @escaping (Result<Void, JentisError>) -> Void) {
         let previousConsents = UserSettings.shared.getConsents()
         let consentId = UserSettings.shared.getConsentId() ?? UUID().uuidString.lowercased()
         UserSettings.shared.setConsentId(consentId)
@@ -88,44 +95,18 @@ public class TrackService {
 
         self.consents = consents
         UserSettings.shared.setConsents(consents)
-
-        sendConsentSettings(consentId: consentId, vendors: consents, vendorsChanged: diffDict)
+        sendConsentSettings(consentId: consentId, vendors: consents, vendorsChanged: diffDict, completion: completion)
     }
-
-    private func sendConsentSettings(consentId: String, vendors: [String: Bool], vendorsChanged: [String: Bool]) {
-        let trackingData = TrackingData()
-
-        let parent = Parent()
-        parent.user = userId
-        parent.session = sessionId
-
-        trackingData.client = getClient()
-        trackingData.data.append(getUserData(parent: parent))
-        trackingData.data.append(getConsentData(parent: parent, consentId: consentId, vendors: vendors, vendorsChanged: vendorsChanged))
-
-        // FIXME: Remove
-        let jsonData = try! JSONEncoder().encode(trackingData)
-        let jsonString = String(data: jsonData, encoding: .utf8)!
-
-        API.shared.setConsentSettings(trackingData) { [weak self] in
-            guard let self = self else {
-                return
+    
+    /// Set new consent values
+    /// Trackings which were stored previously (while consent was nil) are sent automatically (if at least one tracking provider is enabled)
+    /// - Parameter consents: A list of the new Consents with true/false
+    public func setConsents(consents: [String: Bool]) async -> Result<Void, JentisError> {
+        return await withCheckedContinuation { continuation in
+            setConsents(consents: consents) { result in
+                    continuation.resume(returning: result)
+                }
             }
-            
-            if self.isTrackingDisabled() {
-                // User disabled all Tracking options - discard tracking
-                self.storedTrackings = []
-                return
-            }
-
-            let currentlyStoredTrackings = self.storedTrackings
-            
-            for storedTracking in currentlyStoredTrackings {
-                API.shared.submitTracking(storedTracking) {}
-            }
-            
-            self.storedTrackings = []
-        }
     }
 
     /// Set debugging of tracking
@@ -151,7 +132,7 @@ public class TrackService {
         }
     }
 
-    /// Send a tracking
+    /// Tracking method
     /// - if no consent was set until now, the tracking is stored until a consent is set / the app is closed
     /// - if the consent was set but all trackingproviders are disabled the tracking is discarded
     /// - if the consent was set and at least one trackingprovider is enabled -> tracking is sent to the server
@@ -222,7 +203,7 @@ public class TrackService {
                                     if consents == nil {
                                         storedTrackings.append(modifiedJsonData)
                                     } else {
-                                        API.shared.submitTracking(modifiedJsonData) {}
+                                        API.shared.submitTracking(modifiedJsonData) {_ in}
                                     }
                                 }
                             }
@@ -242,9 +223,54 @@ public class TrackService {
     }
 
     // MARK: Private functions
+    
+    private func sendConsentSettings(consentId: String, vendors: [String: Bool], vendorsChanged: [String: Bool], completion: @escaping (Result<Void, JentisError>) -> Void) {
+        let trackingData = JentisData()
 
-    func getTrackingData() -> TrackingData? {
-        let trackingData = TrackingData()
+        let parent = Parent()
+        parent.user = userId
+        parent.session = sessionId
+
+        trackingData.client = getClient()
+        trackingData.data.append(getUserData(parent: parent))
+        trackingData.data.append(getConsentData(parent: parent, consentId: consentId, vendors: vendors, vendorsChanged: vendorsChanged))
+
+        // FIXME: Remove
+        let jsonData = try! JSONEncoder().encode(trackingData)
+        let jsonString = String(data: jsonData, encoding: .utf8)!
+
+        API.shared.setConsentSettings(trackingData) { [weak self] result in
+            guard let self = self else {
+                return
+            }
+            
+            completion(result)
+            
+            switch result {
+            case .success:
+                break
+            case .failure(_):
+                return
+            }
+            
+            if self.isTrackingDisabled() {
+                // User disabled all Tracking options - discard tracking
+                self.storedTrackings = []
+                return
+            }
+
+            let currentlyStoredTrackings = self.storedTrackings
+
+            for storedTracking in currentlyStoredTrackings {
+                API.shared.submitTracking(storedTracking) {_ in}
+            }
+
+            self.storedTrackings = []
+        }
+    }
+
+    func getTrackingData() -> JentisData? {
+        let trackingData = JentisData()
 
         let parent = Parent()
         parent.user = userId
@@ -308,23 +334,9 @@ public class TrackService {
         sessionData.id = parent.session
         sessionData.action = Config.Action.udp.rawValue
         sessionData.account = "\(config!.trackID).\(config!.environment.rawValue)"
-
-        // Screen Size
-        let screenSize: CGRect = UIScreen.main.bounds
-        // iOS Version
-        let systemVersion = UIDevice.current.systemVersion
-        // Language
-        let languageCode = Locale.current.languageCode
+        sessionData.documentType = Config.DocumentType.session.rawValue
 
         let sessionDataProperty = Property()
-        sessionData.documentType = Config.DocumentType.session.rawValue
-        sessionDataProperty.navigatorLanguage = languageCode
-        sessionDataProperty.navigatorPlatform = Config.Const.os
-        sessionDataProperty.windowScreenWidth = Int(screenSize.width)
-        sessionDataProperty.windowScreenHeight = Int(screenSize.height)
-        sessionDataProperty.windowViewportHeight = Int(screenSize.height)
-        sessionDataProperty.windowViewportWidth = Int(screenSize.width)
-        sessionDataProperty.navigatorUseragent = systemVersion
 
         if let debugInfo = debugInfo, debugInfo.debugEnabled {
             sessionDataProperty.jtsDebug = debugInfo.debugId
@@ -355,12 +367,27 @@ public class TrackService {
         eventDataSystem.consent = consents
         eventDataSystem.href = ""
         eventData.system = eventDataSystem
+        
+        let screenSize: CGRect = UIScreen.main.bounds
+        let appName = Bundle.main.infoDictionary?[kCFBundleNameKey as String] as? String
+        let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+        let buildNumber = Bundle.main.infoDictionary?["CFBundleVersion"] as? String
 
         let eventDataProperty = Property()
         eventDataProperty.jtspushedcommands = currentTracks
         currentTracks = []
         eventDataProperty.userDocID = userId
         eventDataProperty.eventDocID = eventId
+        eventDataProperty.appDeviceBrand = Config.Device.brand
+        eventDataProperty.appDeviceModel = String.deviceModel
+        eventDataProperty.appDeviceOS = Config.Device.os
+        eventDataProperty.appDeviceOSVersion = UIDevice.current.systemVersion
+        eventDataProperty.appDeviceLanguage = Locale.current.languageCode
+        eventDataProperty.appDeviceWidth = Int(screenSize.width)
+        eventDataProperty.appDeviceHeight = Int(screenSize.height)
+        eventDataProperty.appApplicationName = appName
+        eventDataProperty.appApplicationVersion = appVersion
+        eventDataProperty.appApplicationBuildNumber = buildNumber
 
         eventData.property = eventDataProperty
 
@@ -386,23 +413,23 @@ public class TrackService {
             return false
         }
     }
-    
+
     func isTrackingDisabled() -> Bool {
         guard let consents = consents else {
             return false
         }
-        
+
         return !consents.values.contains(where: { $0 })
     }
 
-    func getTestTrackingData() -> TrackingData? {
+    func getTestTrackingData() -> JentisData? {
         guard let url = Bundle.module.url(forResource: "testTrackingData", withExtension: "json") else {
             return nil
         }
 
         do {
             let data = try Data(contentsOf: url)
-            return try JSONDecoder().decode(TrackingData.self, from: data)
+            return try JSONDecoder().decode(JentisData.self, from: data)
         } catch {
             print("Error - Unable to parse  testjson")
             return nil

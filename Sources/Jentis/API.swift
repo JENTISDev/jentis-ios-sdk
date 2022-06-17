@@ -11,35 +11,28 @@ class API {
         self.baseUrl = URL(string: baseUrl)
     }
 
-    func setConsentSettings(_ trackingData: TrackingData, completion : @escaping () -> Void) {
+    func setConsentSettings(_ trackingData: JentisData, completion : @escaping (Result<Void, JentisError>) -> Void) {
         do {
             let encoder = JSONEncoder()
             let jsonData = try encoder.encode(trackingData)
 
-            submitTracking(jsonData) {
-                completion()
+            submitTracking(jsonData) {result in
+                switch result {
+                case .success(_):
+                    completion(.success(()))
+                    break
+                case .failure(_):
+                    completion(.failure(.setConsentError))
+                    break
+                }
             }
         } catch {
+            completion(.failure(.setConsentError))
             print(error)
         }
     }
 
-    func trackDefault(_ trackingData: TrackingData) {
-        do {
-            let encoder = JSONEncoder()
-            let jsonData = try encoder.encode(trackingData)
-
-            submitTracking(jsonData){}
-        } catch {
-            print(error)
-        }
-    }
-
-    func trackCustom(_ customData: Data) {
-        submitTracking(customData){}
-    }
-
-    func submitTracking(_ data: Data, completion : @escaping () -> Void) {
+    func submitTracking(_ data: Data, completion : @escaping (Result<Void, JentisError>) -> Void) {
         guard let baseUrl = baseUrl else {
             return
         }
@@ -50,10 +43,10 @@ class API {
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
 
         URLSession.shared.dataTask(with: request) { _, response, _ in
-            if let httpResponse = response as? HTTPURLResponse {
-                print(httpResponse.statusCode)
-                
-                completion()
+            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
+                completion(.success(()))
+            } else {
+                completion(.failure(.requestError))
             }
         }.resume()
     }

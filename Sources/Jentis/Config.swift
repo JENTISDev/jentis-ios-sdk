@@ -3,8 +3,9 @@ import Foundation
 struct Config {
     static let keyPrefix = "at.allaboutapps"
     
-    enum Const {
+    enum Device {
         public static let os = "iOS"
+        public static let brand = "Apple"
     }
     
     enum Tracking {
