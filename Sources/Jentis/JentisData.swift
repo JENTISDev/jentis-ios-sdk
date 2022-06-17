@@ -281,21 +281,23 @@ class PageviewWithoutExclude: Codable {
 // MARK: - System
 
 class System: Codable {
+    var environment: String?
     var navigatorUserAgent: String?
     var href: String?
     var consent: [String: Bool]?
 
     enum CodingKeys: String, CodingKey {
         case navigatorUserAgent = "navigator-userAgent"
-        case href, consent
+        case href, consent, environment
     }
 
     init() {}
 
-    init(navigatorUserAgent: String?, href: String?, consent: [String: Bool]?) {
+    init(navigatorUserAgent: String?, href: String?, consent: [String: Bool]?, environment: String?) {
         self.navigatorUserAgent = navigatorUserAgent
         self.href = href
         self.consent = consent
+        self.environment = environment
     }
 }
 

@@ -97,16 +97,16 @@ public class TrackService {
         UserSettings.shared.setConsents(consents)
         sendConsentSettings(consentId: consentId, vendors: consents, vendorsChanged: diffDict, completion: completion)
     }
-    
+
     /// Set new consent values
     /// Trackings which were stored previously (while consent was nil) are sent automatically (if at least one tracking provider is enabled)
     /// - Parameter consents: A list of the new Consents with true/false
     public func setConsents(consents: [String: Bool]) async -> Result<Void, JentisError> {
         return await withCheckedContinuation { continuation in
             setConsents(consents: consents) { result in
-                    continuation.resume(returning: result)
-                }
+                continuation.resume(returning: result)
             }
+        }
     }
 
     /// Set debugging of tracking
@@ -203,7 +203,7 @@ public class TrackService {
                                     if consents == nil {
                                         storedTrackings.append(modifiedJsonData)
                                     } else {
-                                        API.shared.submitTracking(modifiedJsonData) {_ in}
+                                        API.shared.submitTracking(modifiedJsonData) { _ in }
                                     }
                                 }
                             }
@@ -223,7 +223,7 @@ public class TrackService {
     }
 
     // MARK: Private functions
-    
+
     private func sendConsentSettings(consentId: String, vendors: [String: Bool], vendorsChanged: [String: Bool], completion: @escaping (Result<Void, JentisError>) -> Void) {
         let trackingData = JentisData()
 
@@ -239,16 +239,16 @@ public class TrackService {
             guard let self = self else {
                 return
             }
-            
+
             completion(result)
-            
+
             switch result {
             case .success:
                 break
-            case .failure(_):
+            case .failure:
                 return
             }
-            
+
             if self.isTrackingDisabled() {
                 // User disabled all Tracking options - discard tracking
                 self.storedTrackings = []
@@ -258,7 +258,7 @@ public class TrackService {
             let currentlyStoredTrackings = self.storedTrackings
 
             for storedTracking in currentlyStoredTrackings {
-                API.shared.submitTracking(storedTracking) {_ in}
+                API.shared.submitTracking(storedTracking) { _ in }
             }
 
             self.storedTrackings = []
@@ -316,7 +316,10 @@ public class TrackService {
         userData.action = Config.Action.udp.rawValue
         userData.account = "\(config!.trackID).\(config!.environment.rawValue)"
         userData.documentType = Config.DocumentType.user.rawValue
-        userData.system = System()
+
+        let userDataSystem = System()
+        userDataSystem.environment = Config.Tracking.systemEnvironment
+        userData.system = userDataSystem
 
         return userData
     }
@@ -359,7 +362,7 @@ public class TrackService {
         eventDataSystem.consent = consents
         eventDataSystem.href = ""
         eventData.system = eventDataSystem
-        
+
         let screenSize: CGRect = UIScreen.main.bounds
         let appName = Bundle.main.infoDictionary?[kCFBundleNameKey as String] as? String
         let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
@@ -390,9 +393,10 @@ public class TrackService {
         let client = Client()
 
         client.clientTimestamp = Date().millisecondsSince1970
-
-        // Use App Name for Domain
-        client.domain = "\(config!.trackDomain).\(Bundle.main.infoDictionary?[kCFBundleNameKey as String] as? String ?? "")"
+        
+        let trackDomain = ".\(config!.trackDomain.deletingPrefix(Config.Tracking.trackingDomainPrefix))"
+        
+        client.domain = trackDomain
 
         return client
     }

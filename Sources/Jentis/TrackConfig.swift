@@ -1,7 +1,7 @@
 import Foundation
 
 public struct TrackConfig {
-    public enum Environment: String {
+    public enum Environment: String, CaseIterable {
         case live, stage
     }
 

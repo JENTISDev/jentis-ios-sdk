@@ -18,4 +18,9 @@ extension String {
             return identifier + String(UnicodeScalar(UInt8(value)))
         }
     }
+
+    func deletingPrefix(_ prefix: String) -> String {
+        guard hasPrefix(prefix) else { return self }
+        return String(dropFirst(prefix.count))
+    }
 }
