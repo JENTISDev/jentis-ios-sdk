@@ -28,7 +28,7 @@ class API {
             }
         } catch {
             completion(.failure(.setConsentError))
-            print(error)
+            print("[JENTIS] Error: \(error)")
         }
     }
 

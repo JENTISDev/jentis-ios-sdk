@@ -217,7 +217,7 @@ public class TrackService {
                     print("[JENTIS] Failed to parse json dictionary")
                 }
             } catch {
-                print(error)
+                print("[JENTIS] Error: \(error)")
             }
         }
     }
@@ -427,7 +427,7 @@ public class TrackService {
             let data = try Data(contentsOf: url)
             return try JSONDecoder().decode(JentisData.self, from: data)
         } catch {
-            print("Error - Unable to parse  testjson")
+            print("[JENTIS] Error - Unable to parse  testjson")
             return nil
         }
     }
