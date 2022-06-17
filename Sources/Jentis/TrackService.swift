@@ -235,10 +235,6 @@ public class TrackService {
         trackingData.data.append(getUserData(parent: parent))
         trackingData.data.append(getConsentData(parent: parent, consentId: consentId, vendors: vendors, vendorsChanged: vendorsChanged))
 
-        // FIXME: Remove
-        let jsonData = try! JSONEncoder().encode(trackingData)
-        let jsonString = String(data: jsonData, encoding: .utf8)!
-
         API.shared.setConsentSettings(trackingData) { [weak self] result in
             guard let self = self else {
                 return
@@ -280,10 +276,6 @@ public class TrackService {
         trackingData.data.append(getUserData(parent: parent))
         trackingData.data.append(getSessionData(parent: parent))
         trackingData.data.append(getEventData(parent: parent))
-
-        // FIXME: Remove
-        let jsonData = try! JSONEncoder().encode(trackingData)
-        let jsonString = String(data: jsonData, encoding: .utf8)!
 
         return trackingData
     }
