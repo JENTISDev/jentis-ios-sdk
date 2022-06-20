@@ -32,7 +32,7 @@ From now on you can track data using the `push` method. Pass key-value pairs to 
 | Key  | Description | Example Value(s) |
 | ------------- | ------------- | ------------- |
 | app_device_brand  | The brand of the device | Apple |
-| app_device_model  | The device model | iPhone14,5 (for iPhone 13, see [Lookup table](https://gist.github.com/adamawolf/3048717) for more Information ) |
+| app_device_model  | The device model | iPhone14,5 (for iPhone 13, see [Lookup table](https://gist.github.com/adamawolf/3048717) for more Information) |
 | app_device_os | The device operating System | iOS |
 | app_device_os_version | The device os Version | 15.0, 13.1 |
 | app_device_language | The device language | de, en |
