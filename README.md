@@ -6,7 +6,7 @@ Jentis is a Package to support app Tracking to Jentis.
 
 ## Basic usage
 
-First setup the `TrackService` by passing a `TrackConfig` object the `initTracking` method.
+First setup the `TrackService` by passing a `TrackConfig` object the `initTracking` method (on App Start).
 
 ```swift
 let config = TrackConfig(trackDomain: "https://kndmjh.demoApp.jtm-demo.com/", trackID: "demoApp", environment: .live)
