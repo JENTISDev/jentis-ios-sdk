@@ -71,3 +71,31 @@ TrackService.shared.debugTracking(true, debugId: "62a9e9c727255", version: "2")
 ```swift
 TrackService.shared.debugTracking(false)
 ```
+
+## Helper Functions
+
+This methods can be used to retrieve specific data from the SDK.
+
+### getConsentId
+
+Returns the consentID which was created when the user first set his consents.
+
+```swift
+let consentID = TrackService.shared.getConsentId()
+```
+
+### getCurrentConsents
+
+Returns the current consent settings.
+
+```swift
+let trackingOptions = TrackService.shared.getCurrentConsents()
+```
+
+### getLastConsentUpdate
+
+Returns a Date object of the last time the user updated the consents.
+
+```swift
+let lastUpdateDate = TrackService.shared.getLastConsentUpdate()
+```
