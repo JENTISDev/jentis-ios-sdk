@@ -80,6 +80,12 @@ public class TrackService {
     /// - Parameter consents: A list of the new Consents with true/false
     /// - Parameter completion: Contains the information whether the request was successful or not
     public func setConsents(consents: [String: Bool], completion: @escaping (Result<Void, JentisError>) -> Void) {
+        guard config != nil else {
+            print("[JENTIS] Call initTracking first")
+            completion(.failure(.setConsentError))
+            return
+        }
+        
         let previousConsents = UserSettings.shared.getConsents()
         let consentId = UserSettings.shared.getConsentId() ?? UUID().uuidString.lowercased()
 
