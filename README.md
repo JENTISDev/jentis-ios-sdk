@@ -1,5 +1,3 @@
-![Swift Package Manager](https://img.shields.io/badge/Swift_Package_Manager-compatible-orange?style=flat)
-
 # Jentis
 
 Jentis is a Package to support app Tracking to Jentis.
