@@ -74,6 +74,17 @@ public class TrackService {
     public func getConsentId() -> String? {
         UserSettings.shared.getConsentId()
     }
+    
+    /// Get the date of the last consent update
+    /// - Returns: The last consent update Date
+    public func getLastConsentUpdate() -> Date? {
+        if let lastConsentUpdate = UserSettings.shared.getLastConsentUpdate() {
+            let timestamp = TimeInterval(integerLiteral: lastConsentUpdate / 1000)
+            let date = Date(timeIntervalSince1970: timestamp)
+            return date
+        }
+        return nil
+    }
 
     /// Set new consent values
     /// Trackings which were stored previously (while consent was nil) are sent automatically (if at least one tracking provider is enabled)
