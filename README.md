@@ -33,6 +33,12 @@ From now on you can track data using the `push` method. Pass key-value pairs to 
 
 ### Default Trackings
 
+| Tables        | Are           | Cool  |
+| ------------- |:-------------:| -----:|
+| col 3 is      | right-aligned | $1600 |
+| col 2 is      | centered      |   $12 |
+| zebra stripes | are neat      |    $1 |
+
  Key  | Description | Example Value(s) 
 | ------------- | ------------- |
 | app_device_brand  | The brand of the device | Apple |
