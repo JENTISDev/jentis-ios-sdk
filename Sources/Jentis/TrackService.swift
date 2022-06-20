@@ -82,20 +82,18 @@ public class TrackService {
     public func setConsents(consents: [String: Bool], completion: @escaping (Result<Void, JentisError>) -> Void) {
         let previousConsents = UserSettings.shared.getConsents()
         let consentId = UserSettings.shared.getConsentId() ?? UUID().uuidString.lowercased()
-        UserSettings.shared.setConsentId(consentId)
 
-        var diffDict: [String: Bool] = [:]
+        // Get changed Vendors List
+        var vendorsChanged: [String: Bool] = [:]
         if let previousConsents = previousConsents {
             for previousConsent in previousConsents {
                 if previousConsents[previousConsent.key] != consents[previousConsent.key] {
-                    diffDict[previousConsent.key] = consents[previousConsent.key]
+                    vendorsChanged[previousConsent.key] = consents[previousConsent.key]
                 }
             }
         }
 
-        self.consents = consents
-        UserSettings.shared.setConsents(consents)
-        sendConsentSettings(consentId: consentId, vendors: consents, vendorsChanged: diffDict, completion: completion)
+        sendConsentSettings(consentId: consentId, vendors: consents, vendorsChanged: vendorsChanged, completion: completion)
     }
 
     /// Set new consent values
@@ -139,10 +137,16 @@ public class TrackService {
     ///
     /// - Parameter data: Contains the key:value pairs
     public func push(data: [String: Any]) {
+        guard config != nil else {
+            print("[JENTIS] Call initTracking first")
+            return
+        }
+
         if isTrackingDisabled() {
             // User disabled all Tracking options - discard tracking
             currentTracks = []
             currentProperties = [:]
+            print("[JENTIS]: not tracking - all vendors are set to false")
             return
         }
 
@@ -160,71 +164,18 @@ public class TrackService {
         }
 
         if trackString == Config.Tracking.Track.submit.rawValue {
-            guard config != nil else {
-                print("[JENTIS] Call initTracking first")
-                return
-            }
-
-            if !isSessionValid() {
-                sessionId = String.randomId()
-            }
-
-            guard let trackingData = getTrackingData() else {
-                print("[JENTIS] Error - Failed to get tracking data")
-                return
-            }
-
-            do {
-
-                let encoder = JSONEncoder()
-                let jsonData = try encoder.encode(trackingData)
-
-                let jsonDict = try JSONSerialization.jsonObject(with: jsonData, options: [])
-
-                if var dictionary = jsonDict as? [String: Any] {
-                    if var data = dictionary[Config.Tracking.dataKey] as? [[String: Any]] {
-                        if let index = data.firstIndex(where: { $0.contains(where: { $0.key == Config.Tracking.documentTypeKey && $0.value as? String == Config.DocumentType.event.rawValue }) }) {
-                            var eventDocument = data[index]
-                            if var eventProperties = eventDocument[Config.Tracking.propertiesKey] as? [String: Any] {
-                                for customProperty in currentProperties {
-                                    eventProperties[customProperty.key] = customProperty.value
-                                }
-
-                                eventDocument[Config.Tracking.propertiesKey] = eventProperties
-                                data[index] = eventDocument
-                                dictionary["data"] = data
-
-                                if let modifiedJsonData = try? JSONSerialization.data(withJSONObject: dictionary) {
-                                    currentProperties = [:]
-                                    currentTracks = []
-
-                                    // Consents not set yet
-                                    // Storing current tracking
-                                    if consents == nil {
-                                        storedTrackings.append(modifiedJsonData)
-                                    } else {
-                                        API.shared.submitTracking(modifiedJsonData) { _ in }
-                                    }
-                                }
-                            }
-                        } else {
-                            print("[JENTIS] Failed to get index of event document")
-                        }
-                    } else {
-                        print("[JENTIS] Failed to get data from json dict")
-                    }
-                } else {
-                    print("[JENTIS] Failed to parse json dictionary")
-                }
-            } catch {
-                print("[JENTIS] Error: \(error)")
-            }
+            submitPush()
         }
     }
 
     // MARK: Private functions
 
     private func sendConsentSettings(consentId: String, vendors: [String: Bool], vendorsChanged: [String: Bool], completion: @escaping (Result<Void, JentisError>) -> Void) {
+
+        if !isSessionValid() {
+            sessionId = String.randomId()
+        }
+
         let trackingData = JentisData()
 
         let parent = Parent()
@@ -244,7 +195,9 @@ public class TrackService {
 
             switch result {
             case .success:
-                break
+                self.consents = vendors
+                UserSettings.shared.setConsents(vendors)
+                UserSettings.shared.setConsentId(consentId)
             case .failure:
                 return
             }
@@ -252,9 +205,11 @@ public class TrackService {
             if self.isTrackingDisabled() {
                 // User disabled all Tracking options - discard tracking
                 self.storedTrackings = []
+                print("[JENTIS]: clearing stored trackings - all vendors are set to false")
                 return
             }
 
+            // User set consents - send stored trackings
             let currentlyStoredTrackings = self.storedTrackings
 
             for storedTracking in currentlyStoredTrackings {
@@ -262,6 +217,73 @@ public class TrackService {
             }
 
             self.storedTrackings = []
+        }
+    }
+
+    private func submitPush() {
+        if !isSessionValid() {
+            sessionId = String.randomId()
+        }
+
+        guard let trackingData = getTrackingData() else {
+            print("[JENTIS] Error - Failed to get tracking data")
+            return
+        }
+
+        do {
+            let encoder = JSONEncoder()
+            let jsonData = try encoder.encode(trackingData)
+
+            // Tracking Data as Dictionary
+            let jsonDict = try JSONSerialization.jsonObject(with: jsonData, options: [])
+
+            if var dictionary = jsonDict as? [String: Any] {
+                // Get data from Tracking Data
+                if var data = dictionary[Config.Tracking.dataKey] as? [[String: Any]] {
+                    // Get index of event document
+                    if let index = data.firstIndex(where: { $0.contains(where: { $0.key == Config.Tracking.documentTypeKey && $0.value as? String == Config.DocumentType.event.rawValue }) }) {
+                        var eventDocument = data[index]
+
+                        // Get Properties of event document
+                        if var eventProperties = eventDocument[Config.Tracking.propertiesKey] as? [String: Any] {
+                            // Append custom properties
+                            for customProperty in currentProperties {
+                                eventProperties[customProperty.key] = customProperty.value
+                            }
+
+                            // Override event document with custom properties included
+                            eventDocument[Config.Tracking.propertiesKey] = eventProperties
+                            data[index] = eventDocument
+                            dictionary[Config.Tracking.dataKey] = data
+
+                            // Get data from new dictionary
+                            if let modifiedJsonData = try? JSONSerialization.data(withJSONObject: dictionary) {
+                                currentProperties = [:]
+                                currentTracks = []
+
+                                if consents == nil {
+                                    // Consents not set yet
+                                    // Storing current tracking
+
+                                    print("[JENTIS]: Consent not set yet, storing tracking")
+                                    storedTrackings.append(modifiedJsonData)
+                                } else {
+                                    print("[JENTIS]: Sending tracking")
+                                    API.shared.submitTracking(modifiedJsonData) { _ in }
+                                }
+                            }
+                        }
+                    } else {
+                        print("[JENTIS] Failed to get index of event document")
+                    }
+                } else {
+                    print("[JENTIS] Failed to get data from json dict")
+                }
+            } else {
+                print("[JENTIS] Failed to parse json dictionary")
+            }
+        } catch {
+            print("[JENTIS] Error: \(error)")
         }
     }
 
@@ -295,7 +317,7 @@ public class TrackService {
         consentDataParent.user = parent.user
         consentData.parent = consentDataParent
 
-        consentData.account = "\(config!.trackID).\(config!.environment.rawValue)"
+        consentData.account = getAccount()
 
         let consentDataProperty = Property()
         consentDataProperty.track = Config.Tracking.Track.consent.rawValue
@@ -314,7 +336,7 @@ public class TrackService {
         let userData = TrackingDataDatum()
         userData.id = parent.user
         userData.action = Config.Action.udp.rawValue
-        userData.account = "\(config!.trackID).\(config!.environment.rawValue)"
+        userData.account = getAccount()
         userData.documentType = Config.DocumentType.user.rawValue
 
         let userDataSystem = System()
@@ -328,7 +350,7 @@ public class TrackService {
         let sessionData = TrackingDataDatum()
         sessionData.id = parent.session
         sessionData.action = Config.Action.udp.rawValue
-        sessionData.account = "\(config!.trackID).\(config!.environment.rawValue)"
+        sessionData.account = getAccount()
         sessionData.documentType = Config.DocumentType.session.rawValue
 
         let sessionDataProperty = Property()
@@ -356,7 +378,7 @@ public class TrackService {
         eventData.parent = parent
         eventData.pluginid = Config.Tracking.pluginId
 
-        eventData.account = "\(config!.trackID).\(config!.environment.rawValue)"
+        eventData.account = getAccount()
 
         let eventDataSystem = System()
         eventDataSystem.consent = consents
@@ -378,6 +400,7 @@ public class TrackService {
         eventDataProperty.appDeviceOS = Config.Device.os
         eventDataProperty.appDeviceOSVersion = UIDevice.current.systemVersion
         eventDataProperty.appDeviceLanguage = Locale.current.languageCode
+        eventDataProperty.appDeviceRegion = NSLocale.current.regionCode
         eventDataProperty.appDeviceWidth = Int(screenSize.width)
         eventDataProperty.appDeviceHeight = Int(screenSize.height)
         eventDataProperty.appApplicationName = appName
@@ -393,16 +416,24 @@ public class TrackService {
         let client = Client()
 
         client.clientTimestamp = Date().millisecondsSince1970
-        
+
         let trackDomain = ".\(config!.trackDomain.deletingPrefix(Config.Tracking.trackingDomainPrefix))"
-        
+
         client.domain = trackDomain
 
         return client
     }
+    
+    private func getAccount() -> String {
+        guard let config = config else {
+            return ""
+        }
+        
+        return "\(config.trackID).\(config.environment.rawValue)"
+    }
 
     func isSessionValid() -> Bool {
-        // The session should be valid for 30 minutes
+        // Check if the session is not longer valid then the specified session duration
         if let diff = Calendar.current.dateComponents([.minute], from: sessionCreatedAt, to: Date()).minute, diff < Config.Tracking.sessionDuration {
             return true
         } else {
@@ -415,20 +446,7 @@ public class TrackService {
             return false
         }
 
+        // Check if any vendor is set to true
         return !consents.values.contains(where: { $0 })
-    }
-
-    func getTestTrackingData() -> JentisData? {
-        guard let url = Bundle.module.url(forResource: "testTrackingData", withExtension: "json") else {
-            return nil
-        }
-
-        do {
-            let data = try Data(contentsOf: url)
-            return try JSONDecoder().decode(JentisData.self, from: data)
-        } catch {
-            print("[JENTIS] Error - Unable to parse  testjson")
-            return nil
-        }
     }
 }

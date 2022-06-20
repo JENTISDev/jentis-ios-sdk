@@ -11,19 +11,18 @@ class API {
         self.baseUrl = URL(string: baseUrl)
     }
 
-    func setConsentSettings(_ trackingData: JentisData, completion : @escaping (Result<Void, JentisError>) -> Void) {
+    func setConsentSettings(_ trackingData: JentisData, completion: @escaping (Result<Void, JentisError>) -> Void) {
         do {
             let encoder = JSONEncoder()
             let jsonData = try encoder.encode(trackingData)
 
-            submitTracking(jsonData) {result in
+            submitTracking(jsonData) { result in
                 switch result {
-                case .success(_):
+                case .success:
                     completion(.success(()))
-                    break
-                case .failure(_):
+                case .failure:
                     completion(.failure(.setConsentError))
-                    break
+                    print("[JENTIS]: Failed to submit consents")
                 }
             }
         } catch {
@@ -32,7 +31,7 @@ class API {
         }
     }
 
-    func submitTracking(_ data: Data, completion : @escaping (Result<Void, JentisError>) -> Void) {
+    func submitTracking(_ data: Data, completion: @escaping (Result<Void, JentisError>) -> Void) {
         guard let baseUrl = baseUrl else {
             return
         }

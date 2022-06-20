@@ -18,10 +18,7 @@ let package = Package(
     targets: [
         .target(
             name: "Jentis",
-            dependencies: [],
-            resources: [
-                .process("Resources/testTrackingData.json"),
-            ]
+            dependencies: []
         ),
         .testTarget(
             name: "JentisTests",

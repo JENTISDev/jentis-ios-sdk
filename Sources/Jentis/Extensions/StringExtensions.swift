@@ -1,6 +1,7 @@
 import Foundation
 
 extension String {
+    // Generates a random ID
     static func randomId(digits: Int = Config.Tracking.idLength) -> String {
         var id = String()
         for _ in 1 ... digits {
@@ -9,6 +10,7 @@ extension String {
         return id
     }
 
+    // Returns the device model
     static var deviceModel: String {
         var systemInfo = utsname()
         uname(&systemInfo)
@@ -19,6 +21,7 @@ extension String {
         }
     }
 
+    // Deletes the prefix from a string
     func deletingPrefix(_ prefix: String) -> String {
         guard hasPrefix(prefix) else { return self }
         return String(dropFirst(prefix.count))

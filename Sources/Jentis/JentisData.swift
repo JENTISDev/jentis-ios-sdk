@@ -114,7 +114,7 @@ class Parent: Codable {
 // MARK: - Property
 
 class Property: Codable {
-    var appDeviceBrand, appDeviceModel, appDeviceOS, appDeviceOSVersion: String?
+    var appDeviceBrand, appDeviceModel, appDeviceOS, appDeviceRegion, appDeviceOSVersion: String?
     var appDeviceLanguage: String?
     var appDeviceWidth, appDeviceHeight: Int?
     var appApplicationName, appApplicationVersion: String?
@@ -139,6 +139,7 @@ class Property: Codable {
         case appDeviceOS = "app_device_os"
         case appDeviceOSVersion = "app_device_os_version"
         case appDeviceLanguage = "app_device_language"
+        case appDeviceRegion = "app_device_region"
         case appDeviceWidth = "app_device_width"
         case appDeviceHeight = "app_device_height"
         case appApplicationName = "app_application_name"
@@ -159,7 +160,7 @@ class Property: Codable {
 
     init() {}
 
-    init(appDeviceBrand: String?, appDeviceModel: String?, appDeviceOS: String?, appDeviceOSVersion: String?, appDeviceLanguage: String?, appDeviceWidth: Int?, appDeviceHeight: Int?, appApplicationName: String?, appApplicationVersion: String?, appApplicationBuildNumber: String?, jtsDebug: String?, jtsVersion: String?, jtspushedcommands: [String]?, documentRef: String?, documentTitle: String?, windowLocationHref: String?, dateNow: Int?, userDocID: String?, eventDocID: String?, documentLocationHref: String?, track: String?, consentid: String?, lastupdate: Int64?, vendors: [String: Bool]?, send: Bool?, userconsent: Bool?, vendorsChanged: [String: Bool]?) {
+    init(appDeviceBrand: String?, appDeviceModel: String?, appDeviceRegion: String?,  appDeviceOS: String?, appDeviceOSVersion: String?, appDeviceLanguage: String?, appDeviceWidth: Int?, appDeviceHeight: Int?, appApplicationName: String?, appApplicationVersion: String?, appApplicationBuildNumber: String?, jtsDebug: String?, jtsVersion: String?, jtspushedcommands: [String]?, documentRef: String?, documentTitle: String?, windowLocationHref: String?, dateNow: Int?, userDocID: String?, eventDocID: String?, documentLocationHref: String?, track: String?, consentid: String?, lastupdate: Int64?, vendors: [String: Bool]?, send: Bool?, userconsent: Bool?, vendorsChanged: [String: Bool]?) {
         self.appDeviceBrand = appDeviceBrand
         self.appDeviceModel = appDeviceModel
         self.appDeviceOS = appDeviceOS
@@ -173,6 +174,7 @@ class Property: Codable {
         self.jtsDebug = jtsDebug
         self.jtsVersion = jtsVersion
         self.jtspushedcommands = jtspushedcommands
+        self.appDeviceRegion = appDeviceRegion
         self.documentRef = documentRef
         self.documentTitle = documentTitle
         self.windowLocationHref = windowLocationHref
