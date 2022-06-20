@@ -19,11 +19,9 @@ The setConsents method asynchronously returns whether it was successful or not. 
 let result = await TrackService.shared.setConsents(consents: ["googleanalytics":true, "easymarketing":false])
 switch result {
 case .success:
-    // Successfully set consents - retrieve ConsentID
-    consentID = TrackService.shared.getConsentId()
+    // Successfully set consents - display success to the user
 case .failure:
-    // An error occured - display error to user (e.g. if no internet connection was available)
-    displayAlert = true
+    // An error occured - display error to user 
 }
 ```
 
