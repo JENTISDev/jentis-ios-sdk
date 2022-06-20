@@ -33,7 +33,7 @@ From now on you can track data using the `push` method. Pass key-value pairs to 
 
 ### Default Trackings
 
-| Key  | Description | Example Value(s) |
+ Key  | Description | Example Value(s) 
 | ------------- | ------------- |
 | app_device_brand  | The brand of the device | Apple |
 | app_device_model  | The device model | iPhone14,5 (for iPhone 13, see [Lookup table]([https://www.google.com](https://gist.github.com/adamawolf/3048717)) for more Information ) |
