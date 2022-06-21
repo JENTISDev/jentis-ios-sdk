@@ -45,11 +45,15 @@ From now on you can track data using the `push` method. Pass key-value pairs to 
 
 ### Example usage
 
-Example usage when the user navigates to a new screen:
+Example usage when the user navigates to a new screen (with custom properties included - use the String extension `jentisToJSON` to convert any JSON String to an appropriate Any? Object):
 
 ```swift
-TrackService.shared.push(data: ["track":"pageview", "pagetitle":"Tracking Screen", "virtualPagePath":"MainScreen/TrackingScreen"])
-TrackService.shared.push(data: ["track":"submit"])
+ let jsonStr = """
+                {"property1":"value1", "property2":"value2"}
+                """.jentisToJSON() as Any
+                
+TrackService.shared.push(data: ["track": "pageview", "pagetitle": "Tracking Screen", "virtualPagePath": "MainScreen/TrackingScreen", "testArray": ["property1": ["value1", "value2"], "property2":"value2"], "testJSON": jsonStr])
+TrackService.shared.push(data: ["track": "submit"])
 ```
 
 ## Debugging
