@@ -25,7 +25,7 @@ struct Config {
     }
     
     enum Action: String {
-        case udp, new
+        case upd, new
     }
     
     enum DocumentType: String {

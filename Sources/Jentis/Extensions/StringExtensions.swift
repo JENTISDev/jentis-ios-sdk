@@ -27,3 +27,10 @@ extension String {
         return String(dropFirst(prefix.count))
     }
 }
+
+public extension String {
+    func jentisToJSON() -> Any? {
+        guard let data = self.data(using: .utf8, allowLossyConversion: false) else { return nil }
+        return try? JSONSerialization.jsonObject(with: data, options: .mutableContainers)
+    }
+}
