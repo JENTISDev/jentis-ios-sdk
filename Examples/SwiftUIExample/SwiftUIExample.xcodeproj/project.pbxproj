@@ -15,6 +15,7 @@
 		273376492859F3D10084D5F8 /* ConsentScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 273376462859F3D10084D5F8 /* ConsentScreen.swift */; };
 		2733764A2859F3D10084D5F8 /* TrackingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 273376472859F3D10084D5F8 /* TrackingScreen.swift */; };
 		2733764B2859F3D10084D5F8 /* MainScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 273376482859F3D10084D5F8 /* MainScreen.swift */; };
+		2745AF9C2A42F97B005C5422 /* ProductScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2745AF9B2A42F97B005C5422 /* ProductScreen.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,7 @@
 		273376462859F3D10084D5F8 /* ConsentScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConsentScreen.swift; sourceTree = "<group>"; };
 		273376472859F3D10084D5F8 /* TrackingScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackingScreen.swift; sourceTree = "<group>"; };
 		273376482859F3D10084D5F8 /* MainScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainScreen.swift; sourceTree = "<group>"; };
+		2745AF9B2A42F97B005C5422 /* ProductScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductScreen.swift; sourceTree = "<group>"; };
 		2755B06C285C904700F2C7A1 /* jentis-ios */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "jentis-ios"; path = ../..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -102,6 +104,7 @@
 				273376462859F3D10084D5F8 /* ConsentScreen.swift */,
 				273376482859F3D10084D5F8 /* MainScreen.swift */,
 				273376472859F3D10084D5F8 /* TrackingScreen.swift */,
+				2745AF9B2A42F97B005C5422 /* ProductScreen.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -188,6 +191,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				273376452859DA9E0084D5F8 /* TrackingOptions.swift in Sources */,
+				2745AF9C2A42F97B005C5422 /* ProductScreen.swift in Sources */,
 				273376492859F3D10084D5F8 /* ConsentScreen.swift in Sources */,
 				2733764B2859F3D10084D5F8 /* MainScreen.swift in Sources */,
 				2733764A2859F3D10084D5F8 /* TrackingScreen.swift in Sources */,

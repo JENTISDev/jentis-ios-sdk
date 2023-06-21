@@ -18,6 +18,9 @@ struct MainScreen: View {
                 NavigationLink(destination: TrackingScreen()) {
                     Text("Tracking Screen")
                 }
+                NavigationLink(destination: ProductScreen()) {
+                    Text("Product Screen")
+                }
             }
             .navigationTitle("Main Screen")
         }

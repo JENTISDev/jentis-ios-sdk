@@ -16,11 +16,12 @@ struct Config {
         static let dataKey = "data"
         static let documentTypeKey = "documentType"
         static let propertiesKey = "property"
+        static let productKey = "product"
         static let systemEnvironment = "sdk-ios"
         static let trackingDomainPrefix = "https://"
         
         enum Track: String {
-            case consent, pageview, submit
+            case consent, pageview, submit, product
         }
     }
     

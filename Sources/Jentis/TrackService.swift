@@ -32,6 +32,10 @@ public class TrackService {
     private var currentTracks: [String] = []
     private var currentProperties: [String: Any?] = [:]
     private var storedTrackings: [Data] = []
+    
+    /// Product track
+    var productDictionary = [String: [Any]]()
+    var productCounter = 0
 
     // MARK: Initializer
 
@@ -74,7 +78,7 @@ public class TrackService {
     public func getConsentId() -> String? {
         UserSettings.shared.getConsentId()
     }
-    
+
     /// Get the date of the last consent update
     /// - Returns: The last consent update Date
     public func getLastConsentUpdate() -> Date? {
@@ -96,7 +100,7 @@ public class TrackService {
             completion(.failure(.setConsentError))
             return
         }
-        
+
         let previousConsents = UserSettings.shared.getConsents()
         let consentId = UserSettings.shared.getConsentId() ?? UUID().uuidString.lowercased()
 
@@ -170,6 +174,29 @@ public class TrackService {
         guard let trackString = data[Config.Tracking.trackKey] as? String else {
             print("[JENTIS] track not included")
             return
+        }
+
+        if trackString == Config.Tracking.Track.product.rawValue {
+            for entry in data {
+                if entry.key != Config.Tracking.trackKey {
+                    if productDictionary.contains(where: { $0.key == entry.key }) {
+                        productDictionary[entry.key]?.append(entry.value)
+                    } else {
+                        productDictionary[entry.key] = []
+                        for i in 0 ... productCounter {
+                            if i == productCounter { break }
+                            productDictionary[entry.key]?.append("")
+                        }
+
+                        productDictionary[entry.key]?.append(entry.value)
+                    }
+                }
+            }
+            productCounter += 1
+
+            for (key, value) in productDictionary where value.count < productCounter {
+                productDictionary[key]?.append("")
+            }
         }
 
         currentTracks.append(trackString)
@@ -267,6 +294,13 @@ public class TrackService {
                             for customProperty in currentProperties {
                                 eventProperties[customProperty.key] = customProperty.value
                             }
+                            
+                            var productArray = [String: [Any]]()
+                            for (key, value) in productDictionary {
+                                productArray[key] = value
+                            }
+                            
+                            eventProperties[Config.Tracking.productKey] = productArray
 
                             // Override event document with custom properties included
                             eventDocument[Config.Tracking.propertiesKey] = eventProperties
@@ -277,6 +311,8 @@ public class TrackService {
                             if let modifiedJsonData = try? JSONSerialization.data(withJSONObject: dictionary) {
                                 currentProperties = [:]
                                 currentTracks = []
+                                productDictionary.removeAll()
+                                productCounter = 0
 
                                 if consents == nil {
                                     // Consents not set yet
@@ -352,7 +388,7 @@ public class TrackService {
     func getUserData(parent: Parent) -> TrackingDataDatum {
         let userData = TrackingDataDatum()
         userData.id = parent.user
-        userData.action = Config.Action.udp.rawValue
+        userData.action = Config.Action.upd.rawValue
         userData.account = getAccount()
         userData.documentType = Config.DocumentType.user.rawValue
 
@@ -366,7 +402,7 @@ public class TrackService {
     func getSessionData(parent: Parent) -> TrackingDataDatum {
         let sessionData = TrackingDataDatum()
         sessionData.id = parent.session
-        sessionData.action = Config.Action.udp.rawValue
+        sessionData.action = Config.Action.upd.rawValue
         sessionData.account = getAccount()
         sessionData.documentType = Config.DocumentType.session.rawValue
 
@@ -440,12 +476,12 @@ public class TrackService {
 
         return client
     }
-    
+
     private func getAccount() -> String {
         guard let config = config else {
             return ""
         }
-        
+
         return "\(config.trackID).\(config.environment.rawValue)"
     }
 
