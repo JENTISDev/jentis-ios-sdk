@@ -3,10 +3,10 @@ import SwiftUI
 
 struct MainScreen: View {
     init() {
-        let config = TrackConfig(trackDomain: "https://kndmjh.allaboutapps.jtm-demo.com/", trackID: "allaboutapps", environment: .live)
+        let config = TrackConfig(trackDomain: "https://kndmjj.allaboutapps.jtm-demo.com/", trackID: "allaboutapps", environment: .stage)
 
         TrackService.shared.initTracking(config: config)
-        TrackService.shared.debugTracking(true, debugId: "62b190593ac89", version: "2")
+        TrackService.shared.debugTracking(true, debugId: "fb97255b-4bc4-459f-acdb-e7ac792924d4", version: "2")
     }
 
     var body: some View {

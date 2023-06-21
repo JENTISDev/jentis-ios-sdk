@@ -110,6 +110,7 @@ public class TrackService {
             for previousConsent in previousConsents {
                 if previousConsents[previousConsent.key] != consents[previousConsent.key] {
                     vendorsChanged[previousConsent.key] = consents[previousConsent.key]
+                    
                 }
             }
         }
@@ -295,13 +296,10 @@ public class TrackService {
                                 eventProperties[customProperty.key] = customProperty.value
                             }
                             
-                            var productArray = [String: [Any]]()
                             for (key, value) in productDictionary {
-                                productArray[key] = value
+                                eventProperties[key] = value
                             }
                             
-                            eventProperties[Config.Tracking.productKey] = productArray
-
                             // Override event document with custom properties included
                             eventDocument[Config.Tracking.propertiesKey] = eventProperties
                             data[index] = eventDocument
