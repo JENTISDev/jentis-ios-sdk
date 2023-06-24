@@ -352,7 +352,7 @@ public class TrackService {
     func getUserData(parent: Parent) -> TrackingDataDatum {
         let userData = TrackingDataDatum()
         userData.id = parent.user
-        userData.action = Config.Action.udp.rawValue
+        userData.action = Config.Action.upd.rawValue
         userData.account = getAccount()
         userData.documentType = Config.DocumentType.user.rawValue
 
@@ -366,7 +366,7 @@ public class TrackService {
     func getSessionData(parent: Parent) -> TrackingDataDatum {
         let sessionData = TrackingDataDatum()
         sessionData.id = parent.session
-        sessionData.action = Config.Action.udp.rawValue
+        sessionData.action = Config.Action.upd.rawValue
         sessionData.account = getAccount()
         sessionData.documentType = Config.DocumentType.session.rawValue
 
